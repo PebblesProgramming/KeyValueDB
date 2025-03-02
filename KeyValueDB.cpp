@@ -1,69 +1,65 @@
 #include <iostream>
 #include <map>
-#include <sstream>
 #include <string>
 
-int main() {
-    std::map<std::string, std::string> store;
-    std::string input;
+int main()
+{
+    std::map<std::string, int> learning;
+    std::string key;
+    int value;
+    
+    while(true)
+    {
+        std::cout << "\nEnter command (write, see all, exit): ";
+        
+        // // Makes sure the newline (When pressed ENTER \n enters the buffer) gets ignored,
+        // //otherwise that newline will be seen as command to be read when in fact you just pressed ENTER
+        // std::cin.ignore(); 
+        std::getline(std::cin, key); // this ensures we get the whole input including spaces for stuff like 'see all' for example
 
-    std::cout << "Simple Key-Value Store CLI\n";
-    std::cout << "Commands: put <key> <value>, get <key>, delete <key>, exit\n";
-
-    while (true) {
-        std::cout << "> ";
-        std::getline(std::cin, input);
-        std::istringstream iss(input);
-        std::string command;
-        iss >> command;
-
-        if (command == "put") {
-            std::string key, value;
-            iss >> key >> value;
-            if (!key.empty() && !value.empty()) {
-                store[key] = value;
-                std::cout << "Stored [" << key << "] = " << value << "\n";
-            }
-            else {
-                std::cout << "Usage: put <key> <value>\n";
-            }
-        }
-        else if (command == "get") {
-            std::string key;
-            iss >> key;
-            if (!key.empty()) {
-                if (store.find(key) != store.end()) {
-                    std::cout << "Value: " << store[key] << "\n";
-                }
-                else {
-                    std::cout << "Key not found\n";
-                }
-            }
-            else {
-                std::cout << "Usage: get <key>\n";
-            }
-        }
-        else if (command == "delete") {
-            std::string key;
-            iss >> key;
-            if (!key.empty()) {
-                if (store.erase(key)) {
-                    std::cout << "Deleted key: " << key << "\n";
-                }
-                else {
-                    std::cout << "Key not found\n";
-                }
-            }
-            else {
-                std::cout << "Usage: delete <key>\n";
-            }
-        }
-        else if (command == "exit") {
+        if(key == "exit")
+        {
             break;
         }
-        else {
-            std::cout << "Invalid command. Please use put, get, delete, or exit.\n";
+
+        
+        if(key == "write")
+        {
+            std::string tempKey; // need this otherwise we will overwrite key and we dont want that
+            std::cout << "Enter String and Number:  ";
+            std::cin >> tempKey;
+            
+            if(!(std::cin >> value))
+            {
+                std::cout << "Invalid input! Please enter a name followed by a number\n";
+                std::cin.clear();
+                std::cin.ignore(100, '\n');
+                continue;
+            }
+        
+            learning[tempKey] = value; // store the key value pair in the map
+            std::cout << "Entry added: " << tempKey << value;
+            continue; // this needs to be here otherwise you dont return to the key cin
         }
+
+        if(key == "see all")
+        {
+            if(learning.empty())
+            {
+                std::cout << "No data stored \n";
+            } else
+            {
+                std::cout << "All stored values: \n";
+                for(auto& index: learning)
+                {
+                    std::cout << index.first << " : " << index.second << "\n";
+                }
+            }
+            continue; // same here as for the write
+        }
+
+        
+    std::cout << "Invalid Command! Please enter 'write', 'see all' or 'exit' \n";
     }
 
     return 0;
